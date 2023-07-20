@@ -10,7 +10,7 @@
 
 <body>
   <header>
-    <button href="#" id="highScores">View Highscores</button>
+    <button href="#" id="highScoresButton">View Highscores</button>
     <p id="time">Time Left: <span id="timeLeft"></span></p>
   </header>
 
@@ -31,8 +31,18 @@
       </div>
     </section>
 
-    <section id="result" hidden>
+    <section id="result" class="card" hidden>
       <h2 id="result-text"></h2>
+    </section>
+
+    <section id="score" class="card" hidden>
+      <h2>Wins: <span id="wins">0</span></h2>
+      <h2>Losses: <span id="losses">0</span></h2>
+    </section>
+
+    <section id="highScores" class="card" hidden>
+      <h2>Highscores</h2>
+      <p id="user">: <span id="points"></span></p>
     </section>
   </main>
 
