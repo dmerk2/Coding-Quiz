@@ -15,34 +15,36 @@
   </header>
 
   <main>
-    <section class="card" id="startCard" data-hidden="hidden">
+    <section class="card" id="startCard">
       <h1>Coding Quiz Challenge</h1>
       <p>Please answer all questions in the given time</p>
       <button id="startButton">Start</button>
     </section>
 
-    <section id="questions" class="card" hidden>
+    <section id="questions" class="card hide">
       <h2 id="question-text"></h2>
       <div id="question-answers">
-        <button id="option1" class="option-button"></button>
-        <button id="option2" class="option-button"></button>
-        <button id="option3" class="option-button"></button>
-        <button id="option4" class="option-button"></button>
       </div>
     </section>
 
-    <section id="result" class="card" hidden>
+    <section id="result" class="card hide">
       <h2 id="result-text"></h2>
     </section>
 
-    <section id="score" class="card" hidden>
-      <h2>Wins: <span id="wins">0</span></h2>
-      <h2>Losses: <span id="losses">0</span></h2>
+    <section id="score" class="card hide">
+      <h2>Score: <span id="points"></span></h2>
+      <label for="userName">Initials:</label>
+      <input type="text" name="name" id="userName"><br>
+      <hr>
+      <p id="savedUser"><span id="savedScore"></span></p>
+      <button id="save">Save</button>
+      <button id="restart">Restart</button>
     </section>
 
-    <section id="highScores" class="card" hidden>
+    <section id="highScores" class="card hide">
       <h2>Highscores</h2>
       <p id="user">: <span id="points"></span></p>
+      <button id="back">Back</button>
     </section>
   </main>
 

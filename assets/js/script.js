@@ -1,22 +1,22 @@
 let time = document.getElementById("time");
 let highScoresButton = document.getElementById("highScoresButton");
 let startButton = document.getElementById("startButton");
-// Classname?????
-let answerOptions = document.getElementsByClassName("option-button");
+let answerOptions = document.querySelector("#question-answers");
 let startCard = document.getElementById("startCard");
 let questionCard = document.getElementById("questions");
 let resultCard = document.getElementById("result");
 let questionText = document.getElementById("question-text");
 let scoreCard = document.getElementById("score");
 let highScoreCard = document.getElementById("highScores");
-let winsEl = document.getElementById("wins");
-let lossesEl = document.getElementById("losses");
 let pointsEl = document.getElementById("points");
-let gamesWon = 0;
-let gamesLost = 0;
-
-let wins = localStorage.getItem("wins");
-let losses = localStorage.getItem("losses");
+let restartEl = document.getElementById("restart");
+let backEl = document.getElementById("back");
+let saveEl = document.getElementById("save");
+let userName = document.getElementById("userName");
+let savedUser = document.getElementById("savedUser");
+let savedScore = document.getElementById("savedScore");
+let storeInitials = [];
+let timeInterval;
 
 //Questions, options and answers are stored in an array
 let questions = [
@@ -57,86 +57,107 @@ let questions = [
     answer: "4. all of the above",
   },
 ];
-
+console.log(questions.options);
 // Timer for the game to countdown
-let timeLeft = 5;
+let timeLeft = 30;
 
 const countdown = () => {
-  let timeInterval = setInterval(() => {
+  timeInterval = setInterval(() => {
     if (timeLeft > 0) {
       time.textContent = "Time Left: " + timeLeft;
       timeLeft--;
-      loseGame();
     } else {
       time.textContent = "Time is up!";
-      clearInterval(timeInterval);
       endGame();
     }
   }, 1000);
 };
 
-// When the start button is clicked, begin the timer
-startButton.addEventListener("click", () => {
-  if (startButton) {
-    countdown();
-    hideCards();
-    renderQuestion();
-  }
-});
-
-// NOT WORKING!
-// Only first index is responding
-let answers = answerOptions[0];
-answers.addEventListener("click", () => {
-  firstQuestion();
-  renderQuestion();
-});
-
 // Setting attribute to hide cards
-const hideCards = () => {
-  startCard.setAttribute("hidden", true);
-  questionCard.removeAttribute("hidden", true);
-  resultCard.setAttribute("hidden", true);
-  scoreCard.setAttribute("hidden", true);
-};
+// const hideCards = () => {
+//   startCard.setAttribute("hidden", true);
+//   questionCard.removeAttribute("hidden", true);
+//   resultCard.setAttribute("hidden", true);
+//   scoreCard.setAttribute("hidden", true);
+// };
 
 // Let the questions start at index 0
 let currentQuestion = 0;
 
-const firstQuestion = () => {
-  if (currentQuestion < questions.length - 1) {
-    currentQuestion++;
+// After the first question is display, iterate through questions
+const renderQuestionText = () => {
+  questionCard.classList.replace("hide", "show");
+  if (currentQuestion === questions.length) {
+    endGame();
+  }
+  answerOptions.innerHTML = "";
+  questionText.textContent = questions[currentQuestion].questionText;
+  for (let i = 0; i < questions[i].options.length; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = questions[currentQuestion].options[i];
+    answerOptions.append(btn);
   }
 };
 
-// After the first question is display, iterate through questions
-const renderQuestion = () => {
-  questionText.textContent = questions[currentQuestion].questionText;
-  // answerOptions.textContent = questions[currentQuestion].options[0];
-}
-
-const winGame = () => {
-  gamesWon++;
-  winsEl.textContent = gamesWon;
-  localStorage.setItem("wins", gamesWon);
-}
-
-const loseGame = () => {
-  gamesLost++;
-  lossesEl.textContent = gamesLost;
-  localStorage.setItem("losses", gamesLost);
-}
+const checkAnswer = (userChoice) => {
+  if (userChoice === questions[currentQuestion].answer) {
+    currentQuestion++;
+    renderQuestionText();
+  } else {
+    currentQuestion++;
+    timeLeft -= 5;
+    renderQuestionText();
+  }
+};
 
 const endGame = () => {
-  scoreCard.removeAttribute("hidden", true);
-  questionCard.setAttribute("hidden", true);
-  winGame();
-  loseGame();
-}
+  questionCard.style.display = "none";
+  scoreCard.classList.replace("hide", "show");
+  clearInterval(timeInterval);
+};
+
+// Save the score and user to localstorage
+const saveHighScore = (initials) => {
+  storeInitials = JSON.parse(localStorage.getItem("highScores")) || [];
+  const user = {
+    initials: initials,
+    score: timeLeft + 1,
+  }
+  console.log(user);
+  storeInitials.push(user);
+  console.log(storeInitials);
+  localStorage.setItem("highScores", JSON.stringify(storeInitials));
+};
 
 highScoresButton.addEventListener("click", () => {
-  highScoreCard.removeAttribute("hidden", true);
+  highScoreCard.classList.replace("hide", "show");
   startCard.setAttribute("hidden", true);
   resultCard.setAttribute("hidden", true);
   scoreCard.setAttribute("hidden", true);
-})
+});
+
+restartEl.addEventListener("click", () => {
+  window.location.reload();
+});
+
+backEl.addEventListener("click", () => {
+  window.location.reload();
+});
+
+saveEl.addEventListener("click", () => {
+  const userInitials = userName.value;
+  console.log(userInitials);
+  saveHighScore(userInitials);
+});
+
+// When the start button is clicked, begin the timer
+startButton.addEventListener("click", () => {
+  startCard.classList.add("hide");
+  countdown();
+  renderQuestionText();
+});
+
+answerOptions.addEventListener("click", () => {
+  let userChoice = event.target.textContent;
+  checkAnswer(userChoice);
+});
