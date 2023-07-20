@@ -1,4 +1,5 @@
 let time = document.getElementById("time");
+let highScoresButton = document.getElementById("highScoresButton");
 let startButton = document.getElementById("startButton");
 // Classname?????
 let answerOptions = document.getElementsByClassName("option-button");
@@ -6,6 +7,16 @@ let startCard = document.getElementById("startCard");
 let questionCard = document.getElementById("questions");
 let resultCard = document.getElementById("result");
 let questionText = document.getElementById("question-text");
+let scoreCard = document.getElementById("score");
+let highScoreCard = document.getElementById("highScores");
+let winsEl = document.getElementById("wins");
+let lossesEl = document.getElementById("losses");
+let pointsEl = document.getElementById("points");
+let gamesWon = 0;
+let gamesLost = 0;
+
+let wins = localStorage.getItem("wins");
+let losses = localStorage.getItem("losses");
 
 //Questions, options and answers are stored in an array
 let questions = [
@@ -48,16 +59,18 @@ let questions = [
 ];
 
 // Timer for the game to countdown
-let timeLeft = 60;
+let timeLeft = 5;
 
 const countdown = () => {
   let timeInterval = setInterval(() => {
     if (timeLeft > 0) {
       time.textContent = "Time Left: " + timeLeft;
       timeLeft--;
+      loseGame();
     } else {
       time.textContent = "Time is up!";
       clearInterval(timeInterval);
+      endGame();
     }
   }, 1000);
 };
@@ -75,8 +88,7 @@ startButton.addEventListener("click", () => {
 // Only first index is responding
 let answers = answerOptions[0];
 answers.addEventListener("click", () => {
-  console.log("clicked");
-  nextQuestion();
+  firstQuestion();
   renderQuestion();
 });
 
@@ -84,17 +96,47 @@ answers.addEventListener("click", () => {
 const hideCards = () => {
   startCard.setAttribute("hidden", true);
   questionCard.removeAttribute("hidden", true);
-  resultCard.removeAttribute("hidden", true);
+  resultCard.setAttribute("hidden", true);
+  scoreCard.setAttribute("hidden", true);
 };
 
+// Let the questions start at index 0
 let currentQuestion = 0;
 
-const nextQuestion = () => {
+const firstQuestion = () => {
   if (currentQuestion < questions.length - 1) {
     currentQuestion++;
   }
 };
 
+// After the first question is display, iterate through questions
 const renderQuestion = () => {
   questionText.textContent = questions[currentQuestion].questionText;
+  // answerOptions.textContent = questions[currentQuestion].options[0];
 }
+
+const winGame = () => {
+  gamesWon++;
+  winsEl.textContent = gamesWon;
+  localStorage.setItem("wins", gamesWon);
+}
+
+const loseGame = () => {
+  gamesLost++;
+  lossesEl.textContent = gamesLost;
+  localStorage.setItem("losses", gamesLost);
+}
+
+const endGame = () => {
+  scoreCard.removeAttribute("hidden", true);
+  questionCard.setAttribute("hidden", true);
+  winGame();
+  loseGame();
+}
+
+highScoresButton.addEventListener("click", () => {
+  highScoreCard.removeAttribute("hidden", true);
+  startCard.setAttribute("hidden", true);
+  resultCard.setAttribute("hidden", true);
+  scoreCard.setAttribute("hidden", true);
+})
