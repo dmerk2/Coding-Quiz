@@ -15,10 +15,11 @@ let saveEl = document.getElementById("save");
 let userName = document.getElementById("userName");
 let savedUser = document.getElementById("savedUser");
 let savedScore = document.getElementById("savedScore");
+let clear = document.getElementById("clear");
 let storeInitials = [];
 let timeInterval;
 
-//Questions, options and answers are stored in an array
+// Questions, options and answers are stored in an array
 let questions = [
   {
     questionText: "Where do you place an external JavaScript file?",
@@ -57,7 +58,7 @@ let questions = [
     answer: "4. all of the above",
   },
 ];
-console.log(questions.options);
+
 // Timer for the game to countdown
 let timeLeft = 30;
 
@@ -72,14 +73,6 @@ const countdown = () => {
     }
   }, 1000);
 };
-
-// Setting attribute to hide cards
-// const hideCards = () => {
-//   startCard.setAttribute("hidden", true);
-//   questionCard.removeAttribute("hidden", true);
-//   resultCard.setAttribute("hidden", true);
-//   scoreCard.setAttribute("hidden", true);
-// };
 
 // Let the questions start at index 0
 let currentQuestion = 0;
@@ -99,6 +92,7 @@ const renderQuestionText = () => {
   }
 };
 
+// Check if the answer is correct and if not remove 5 seconds
 const checkAnswer = (userChoice) => {
   if (userChoice === questions[currentQuestion].answer) {
     currentQuestion++;
@@ -112,6 +106,7 @@ const checkAnswer = (userChoice) => {
 
 const endGame = () => {
   questionCard.style.display = "none";
+  resultCard.style.display = "none";
   scoreCard.classList.replace("hide", "show");
   clearInterval(timeInterval);
 };
@@ -123,9 +118,7 @@ const saveHighScore = (initials) => {
     initials: initials,
     score: timeLeft + 1,
   }
-  console.log(user);
   storeInitials.push(user);
-  console.log(storeInitials);
   localStorage.setItem("highScores", JSON.stringify(storeInitials));
 };
 
@@ -136,17 +129,19 @@ highScoresButton.addEventListener("click", () => {
   scoreCard.setAttribute("hidden", true);
 });
 
+// Reload window to starting card
 restartEl.addEventListener("click", () => {
   window.location.reload();
 });
 
+// Reload window to starting card
 backEl.addEventListener("click", () => {
   window.location.reload();
 });
 
+// Save the users initials to saveHighScore function
 saveEl.addEventListener("click", () => {
   const userInitials = userName.value;
-  console.log(userInitials);
   saveHighScore(userInitials);
 });
 
@@ -157,7 +152,12 @@ startButton.addEventListener("click", () => {
   renderQuestionText();
 });
 
-answerOptions.addEventListener("click", () => {
+answerOptions.addEventListener("click", (event) => {
   let userChoice = event.target.textContent;
   checkAnswer(userChoice);
+});
+
+// Clear the local storage
+clear.addEventListener("click", () => {
+  localStorage.clear();
 });
