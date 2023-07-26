@@ -152,7 +152,7 @@ let allScores = document.getElementById("allScores");
 const saveToHighScoreCard = () => {
   allScores.innerHTML = "";
   storeInitials = JSON.parse(localStorage.getItem("highScores")) || [];
-  //Create and appen list items to ul in high scores
+  //Create and append list items to ul in high scores
   for (let i = 0; i < storeInitials.length; i++) {
     const li = document.createElement("li");
     li.textContent = storeInitials[i].initials + ": " + storeInitials[i].score;
