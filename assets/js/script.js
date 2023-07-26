@@ -18,16 +18,24 @@ let result = document.getElementById("result-text");
 let savedScore = document.getElementById("savedScore");
 let storeInitials = [];
 let timeInterval;
+let finalScore;
 
 // Questions, options and answers are stored in an array
 let questions = [
   {
-    questionText: "What is the correct way to declare a variable in JavaScript?",
-    options: ["1. variable = 10;", "2. var = 10;", "3. let variable = 10;", "4. int variable = 10;"],
+    questionText:
+      "What is the correct way to declare a variable in JavaScript?",
+    options: [
+      "1. variable = 10;",
+      "2. var = 10;",
+      "3. let variable = 10;",
+      "4. int variable = 10;",
+    ],
     answer: "3. let variable = 10;",
   },
   {
-    questionText: "Which method is used to add an element to the end of an array in JavaScript?",
+    questionText:
+      "Which method is used to add an element to the end of an array in JavaScript?",
     options: [
       "1. array.add(element);",
       "2. array.insertLast(element);",
@@ -65,8 +73,9 @@ let timeLeft = 30;
 const countdown = () => {
   timeInterval = setInterval(() => {
     if (timeLeft > 0) {
-      time.textContent = "Time Left: " + timeLeft;
+      console.log(timeLeft);
       timeLeft--;
+      time.textContent = "Time Left: " + timeLeft;
     } else {
       time.textContent = "Time is up!";
       endGame();
@@ -87,47 +96,43 @@ const renderQuestionText = () => {
   questionText.textContent = questions[currentQuestion].questionText;
   for (let i = 0; i < questions[i].options.length; i++) {
     const btn = document.createElement("button");
-    btn.classList.add("answerBtn");
+    btn.setAttribute("class","answerBtn");
     btn.textContent = questions[currentQuestion].options[i];
     answerOptions.append(btn);
   }
 };
 
-// Show whether the answer is correct or incorrect for 2 seconds
-// LAST ANSWER DOES NOT DISPLAY
-const displayAnswer = () => {
-  let timeInterval = 2;
-  timeInterval = setInterval(() => {
-    if (timeInterval > 0) {
-      resultCard.classList.remove("hide");
-    } else {
-      resultCard.classList.add("hide");
-      clearInterval(timeInterval);
-    }
-  }, 1000);
-};
-
 // Check if the answer is correct and if not remove 5 seconds
 const checkAnswer = (userChoice) => {
   if (userChoice === questions[currentQuestion].answer) {
-    currentQuestion++;
+    resultCard.classList.replace("hide", "show");
     result.textContent = "Correct";
-    displayAnswer();
-    renderQuestionText();
+    setTimeout(() => {
+      resultCard.classList.replace("show", "hide");
+      currentQuestion++;
+      renderQuestionText();
+    }, 1000);
   } else {
-    currentQuestion++;
-    timeLeft -= 5;
+    resultCard.classList.replace("hide", "show");
     result.textContent = "Incorrect";
-    displayAnswer();
-    renderQuestionText();
+    setTimeout(() => {
+      resultCard.classList.replace("show", "hide");
+      currentQuestion++;
+      timeLeft -= 5;
+      renderQuestionText();
+    }, 1000);
   }
 };
 
 const endGame = () => {
+  console.log(timeLeft);
   questionCard.style.display = "none";
   resultCard.style.display = "none";
   scoreCard.classList.replace("hide", "show");
   clearInterval(timeInterval);
+  time.textContent = `Time Left: ${timeLeft}`;
+  console.log(timeLeft, "after clearing interval");
+  finalScore = timeLeft;
 };
 
 // Save the score and user to localstorage
@@ -135,7 +140,7 @@ const saveHighScore = (initials) => {
   storeInitials = JSON.parse(localStorage.getItem("highScores")) || [];
   const user = {
     initials: initials,
-    score: timeLeft,
+    score: finalScore,
   };
   storeInitials.push(user);
   localStorage.setItem("highScores", JSON.stringify(storeInitials));
@@ -148,17 +153,28 @@ const saveHighScore = (initials) => {
 let allScores = document.getElementById("allScores");
 // Save scores to localstorage and high scores
 const saveToHighScoreCard = () => {
-  user = JSON.parse(localStorage.getItem("highScores"));
-  user.push(allScores);
-  console.log("user", user);
-}
-allScores.textContent = "Test";
+  allScores.innerHTML = "";
+  storeInitials = JSON.parse(localStorage.getItem("highScores")) || [];
+
+  for (let i = 0; i < storeInitials.length; i++) {
+    const li = document.createElement("li");
+    li.textContent = storeInitials[i].initials + " " + storeInitials[i].score;
+    allScores.append(li);
+  }
+
+  // let sortScore = (user) => {
+  //   return user.sort((a, b) => {
+  //     return a.user.score - b.user.score;
+  //   });
+  // };
+};
 
 highScoresButton.addEventListener("click", () => {
   highScoreCard.classList.replace("hide", "show");
   resultCard.classList.replace("show", "hide");
   scoreCard.classList.replace("show", "hide");
   startCard.setAttribute("hidden", true);
+  saveToHighScoreCard();
 });
 
 // Reload window to starting card
@@ -174,6 +190,11 @@ backEl.addEventListener("click", () => {
 // Save the users initials to saveHighScore function
 saveEl.addEventListener("click", () => {
   const userInitials = userName.value;
+  // If no value is entered return an alert to the user
+  if (!userInitials) {
+    alert("Please enter your initials!");
+    return;
+  }
   saveHighScore(userInitials);
   saveToHighScoreCard();
 });
@@ -193,4 +214,5 @@ answerOptions.addEventListener("click", (event) => {
 // Clear the local storage
 clear.addEventListener("click", () => {
   localStorage.clear();
+  allScores.innerHTML = " ";
 });
