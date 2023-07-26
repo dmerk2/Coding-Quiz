@@ -25,9 +25,11 @@ header {
 h1 {
   font-size: 2rem;
 }
-main{
-  display:flex;
+
+main {
+  display: flex;
   justify-content: center;
+  flex-direction: column;
 }
 
 .card {
@@ -37,7 +39,6 @@ main{
   border-radius: 10px;
   margin: 50px;
   padding: 10px;
- 
 }
 
 button {
@@ -78,13 +79,21 @@ li {
 }
 
 @media screen and (max-width: 653px) {
-  main{
-    display: flex ;
+  main {
+    display: flex;
     flex-direction: column;
     justify-content: center;
-
   }
-  h2{
-    font-size: 1rem;;
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  #userName {
+    width: 100px;
+  }
+
+  .answerBtn {
+    white-space: normal;
   }
 }

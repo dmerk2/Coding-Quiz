@@ -64,16 +64,15 @@ let questions = [
     questionText: "Arrays in Javascript can be used to store __________.",
     options: ["1. numbers", "2. booleans", "3. strings", "4. all of the above"],
     answer: "4. all of the above",
-  },
+  }
 ];
 
 // Timer for the game to countdown
-let timeLeft = 30;
+let timeLeft = 45;
 
 const countdown = () => {
   timeInterval = setInterval(() => {
     if (timeLeft > 0) {
-      console.log(timeLeft);
       timeLeft--;
       time.textContent = "Time Left: " + timeLeft;
     } else {
@@ -96,7 +95,7 @@ const renderQuestionText = () => {
   questionText.textContent = questions[currentQuestion].questionText;
   for (let i = 0; i < questions[i].options.length; i++) {
     const btn = document.createElement("button");
-    btn.setAttribute("class","answerBtn");
+    btn.setAttribute("class", "answerBtn");
     btn.textContent = questions[currentQuestion].options[i];
     answerOptions.append(btn);
   }
@@ -125,13 +124,11 @@ const checkAnswer = (userChoice) => {
 };
 
 const endGame = () => {
-  console.log(timeLeft);
   questionCard.style.display = "none";
   resultCard.style.display = "none";
   scoreCard.classList.replace("hide", "show");
   clearInterval(timeInterval);
   time.textContent = `Time Left: ${timeLeft}`;
-  console.log(timeLeft, "after clearing interval");
   finalScore = timeLeft;
 };
 
@@ -145,28 +142,22 @@ const saveHighScore = (initials) => {
   storeInitials.push(user);
   localStorage.setItem("highScores", JSON.stringify(storeInitials));
   // Store score and initials to highscores
-  let pEl = document.createElement("p");
+  const pEl = document.createElement("p");
   pEl.textContent = user.initials + ": " + user.score;
   savedScore.append(pEl);
 };
 
 let allScores = document.getElementById("allScores");
-// Save scores to localstorage and high scores
+// Pull initials and scores from local storage and store in high scores
 const saveToHighScoreCard = () => {
   allScores.innerHTML = "";
   storeInitials = JSON.parse(localStorage.getItem("highScores")) || [];
-
+  //Create and appen list items to ul in high scores
   for (let i = 0; i < storeInitials.length; i++) {
     const li = document.createElement("li");
-    li.textContent = storeInitials[i].initials + " " + storeInitials[i].score;
+    li.textContent = storeInitials[i].initials + ": " + storeInitials[i].score;
     allScores.append(li);
   }
-
-  // let sortScore = (user) => {
-  //   return user.sort((a, b) => {
-  //     return a.user.score - b.user.score;
-  //   });
-  // };
 };
 
 highScoresButton.addEventListener("click", () => {
@@ -211,7 +202,7 @@ answerOptions.addEventListener("click", (event) => {
   checkAnswer(userChoice);
 });
 
-// Clear the local storage
+// Clear the local storage and empty highscores 
 clear.addEventListener("click", () => {
   localStorage.clear();
   allScores.innerHTML = " ";
